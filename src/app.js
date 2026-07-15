@@ -915,25 +915,8 @@ async function mountBrandMarkShaderPart(part, preset, noiseTexture, token) {
 }
 
 async function syncBrandMarkShader() {
-  const token = shaderToken;
-  if (!brandMark || currentShaderIndex < 0) {
-    disposeBrandMarkShaders();
-    return;
-  }
-
-  const preset = shaderPresets[currentShaderIndex];
-  if (!preset?.perIcon) {
-    disposeBrandMarkShaders();
-    return;
-  }
-
-  const noiseTexture = await loadedNoiseTexture();
-  if (token !== shaderToken) return;
-
-  await Promise.all([
-    mountBrandMarkShaderPart("icon", preset, noiseTexture, token),
-    mountBrandMarkShaderPart("word", preset, noiseTexture, token),
-  ]);
+  // Top-left Brandy lockup stays flat ink; shaders apply to grid/fullscreen only.
+  disposeBrandMarkShaders();
 }
 
 function syncBrandMarkPalette() {
