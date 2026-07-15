@@ -1219,18 +1219,21 @@ body {
 
 .logo-art > svg > g :is(path, polygon, polyline, rect, circle, ellipse),
 .fullscreen-logo-art > svg > g :is(path, polygon, polyline, rect, circle, ellipse),
+.lockup-mark > svg > g :is(path, polygon, polyline, rect, circle, ellipse),
 .grid-lockup-mark > svg > g :is(path, polygon, polyline, rect, circle, ellipse) {
   fill: var(--logo-ink);
 }
 
 .logo-art > svg > g :is(line),
 .fullscreen-logo-art > svg > g :is(line),
+.lockup-mark > svg > g :is(line),
 .grid-lockup-mark > svg > g :is(line) {
   stroke: var(--logo-ink);
 }
 
 .logo-art > svg > g .cls-5,
 .fullscreen-logo-art > svg > g .cls-5,
+.lockup-mark > svg > g .cls-5,
 .grid-lockup-mark > svg > g .cls-5 {
   fill: var(--logo-bg);
 }
