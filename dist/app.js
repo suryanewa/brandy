@@ -24821,9 +24821,6 @@ void main() {
   var currentProfile = null;
   var adminVoteRows = [];
   var statusElement = null;
-  var accessPanel = null;
-  var authForm = null;
-  var authMessage = null;
   var clientBar = null;
   var adminPanel = null;
   var adminContent = null;
@@ -26854,25 +26851,6 @@ void main() {
     return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
   }
   function createAccessUi() {
-    accessPanel = document.createElement("section");
-    accessPanel.className = "access-panel";
-    accessPanel.hidden = true;
-    accessPanel.innerHTML = `
-    <div class="access-card">
-      <form class="access-form" data-auth-form>
-        <label>
-          <span>Email</span>
-          <input name="email" type="email" autocomplete="email" required />
-        </label>
-        <label>
-          <span>Password</span>
-          <input name="password" type="password" autocomplete="current-password" required />
-        </label>
-        <button type="submit">Log in</button>
-      </form>
-      <p class="access-message" data-auth-message role="status"></p>
-    </div>
-  `;
     clientBar = document.createElement("aside");
     clientBar.className = "client-status-region";
     clientBar.innerHTML = `
@@ -26891,13 +26869,10 @@ void main() {
     </div>
     <div class="admin-content"></div>
   `;
-    document.body.prepend(accessPanel, clientBar, adminPanel);
-    authForm = accessPanel.querySelector("[data-auth-form]");
-    authMessage = accessPanel.querySelector("[data-auth-message]");
+    document.body.prepend(clientBar, adminPanel);
     statusElement = clientBar.querySelector("[data-client-status]");
     adminContent = adminPanel.querySelector(".admin-content");
     exportCsvButton = adminPanel.querySelector(".admin-export");
-    authForm.addEventListener("submit", handleAuthSubmit);
     exportCsvButton.addEventListener("click", exportAdminCsv);
   }
   function gridBaseColumns() {
@@ -28832,8 +28807,6 @@ void main() {
     if (target.closest(".grid-filter")) return false;
     if (target.closest(".grid-action")) return false;
     if (target.closest(".grid-dismiss-control")) return false;
-    if (target.closest(".access-panel")) return false;
-    if (accessPanel && !accessPanel.hidden) return false;
     return true;
   }
   function getVisibleLogoTiles() {
@@ -29166,20 +29139,14 @@ void main() {
     if (statusElement) statusElement.textContent = message;
   }
   function syncAccessUi() {
-    if (!accessPanel) return;
+    document.body.classList.remove("is-auth-locked");
+    logoSheet.removeAttribute("aria-hidden");
     const configured = Boolean(supabase);
     const signedIn = Boolean(session?.user);
-    const locked = configured && !signedIn;
-    document.body.classList.toggle("is-auth-locked", locked);
-    logoSheet.setAttribute("aria-hidden", String(locked));
-    accessPanel.hidden = configured && signedIn;
     adminPanel.hidden = !configured || !signedIn || !isAdminRoute;
-    if (!configured) {
-      accessPanel.hidden = true;
+    if (!configured && statusElement) {
       statusElement.textContent = "Supabase config missing";
-      return;
     }
-    authForm.hidden = false;
   }
   function syncLogoGridPresentation() {
     updateFaviconForTopLogo();
@@ -29188,19 +29155,6 @@ void main() {
     applyLogoGridFilter();
     requestAnimationFrame(positionLogoTileLockControls);
     requestAnimationFrame(syncBrandGridOffset);
-  }
-  async function handleAuthSubmit(event) {
-    event.preventDefault();
-    if (!supabase) return;
-    const formData = new FormData(authForm);
-    authMessage.textContent = "Signing in...";
-    const { error } = await supabase.auth.signInWithPassword({
-      email: String(formData.get("email") ?? "").trim(),
-      password: String(formData.get("password") ?? "")
-    });
-    if (error) {
-      authMessage.textContent = error.message;
-    }
   }
   async function loadProfile() {
     if (!supabase || !session?.user) return null;

@@ -18,6 +18,9 @@
   --grid-lock-icon-rest-opacity: 0.5;
   --brand-content-gap: 72px;
   --brand-grid-offset: var(--brand-content-gap);
+  /* Side rails for brand mark + gutter controls; keeps ultrawide airy while
+     preventing the 1220px sheet from crowding laptop viewports. */
+  --side-rail: clamp(200px, 15vw, 320px);
   --brand-mark-font-size: clamp(17px, 1.9vw, 24px);
   --brand-mark-font-family: var(--lockup-font-family);
   --brand-mark-font-weight: 600;
@@ -146,10 +149,7 @@ body {
 .logo-sheet {
   position: relative;
   z-index: 1;
-}
-
-.logo-sheet {
-  width: min(100%, 1220px);
+  width: min(100%, 1220px, calc(100% - 2 * var(--side-rail)));
   margin: 0 auto;
   padding: clamp(12px, 2vw, 28px);
   background: transparent;
@@ -437,6 +437,11 @@ body {
   .grid-filters,
   .grid-actions {
     display: none !important;
+  }
+
+  /* Gutter controls are hidden; reclaim horizontal space for the grid. */
+  .logo-sheet {
+    --side-rail: clamp(16px, 3vw, 32px);
   }
 }
 
@@ -1394,37 +1399,6 @@ body {
   transform: translateX(-3px) rotate(45deg);
 }
 
-.is-auth-locked .logo-sheet {
-  filter: blur(10px);
-  pointer-events: none;
-  user-select: none;
-}
-
-.access-panel {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgb(255 255 255 / 76%);
-  color: var(--logo-ink);
-}
-
-.access-panel[hidden] {
-  display: none;
-}
-
-.access-card {
-  display: grid;
-  width: min(100%, 420px);
-  gap: 16px;
-  padding: 26px;
-  border: 1px solid var(--logo-ink);
-  background: var(--logo-bg);
-}
-
-.access-kicker,
 .admin-kicker {
   margin: 0;
   font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -1432,44 +1406,17 @@ body {
   text-transform: uppercase;
 }
 
-.access-title,
 .admin-panel h2 {
   margin: 0;
   font: 700 28px/1.05 Helvetica, "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0;
 }
 
-.access-copy,
-.access-message,
 .admin-empty {
   margin: 0;
   font: 500 14px/1.45 Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 
-.access-form {
-  display: grid;
-  gap: 12px;
-}
-
-.access-form label {
-  display: grid;
-  gap: 6px;
-  font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  text-transform: uppercase;
-}
-
-.access-form input {
-  width: 100%;
-  min-height: 44px;
-  padding: 0 12px;
-  border: 1px solid var(--logo-ink);
-  border-radius: 0;
-  background: var(--logo-bg);
-  color: var(--logo-ink);
-  font: 500 16px/1.2 Helvetica, "Helvetica Neue", Arial, sans-serif;
-}
-
-.access-form button,
 .admin-export {
   min-height: 38px;
   padding: 0 14px;
